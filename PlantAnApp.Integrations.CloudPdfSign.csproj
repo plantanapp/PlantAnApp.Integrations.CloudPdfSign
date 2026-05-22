@@ -1,4 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\..\..\..\PlantAnApp.build" />
 
 	<PropertyGroup>
 		<TargetFramework>net472</TargetFramework>
@@ -55,8 +56,16 @@
 	  <Reference Include="System.ServiceModel" />
 	</ItemGroup>
 
-	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-	  <Exec Command="if $(ConfigurationName) == Debug goto copyfiles&#xD;&#xA;if $(ConfigurationName) == Develop goto copyfiles&#xD;&#xA;if $(ConfigurationName) == Release goto copyfiles&#xD;&#xA;goto end&#xD;&#xA;&#xD;&#xA;:copyfiles&#xD;&#xA;&#xD;&#xA;xcopy &quot;$(TargetDir)$(TargetName).dll&quot; &quot;$(ProjectDir)..\..\..\..\..\bin\*.*&quot; /y /q&#xD;&#xA;xcopy &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(ProjectDir)..\..\..\..\..\bin\*.*&quot; /y /q&#xD;&#xA;&#xD;&#xA;xcopy &quot;$(ProjectDir)\Config\Common\*.*&quot; &quot;$(ProjectDir)..\..\..\..\DnnSharp\Common\Config\*.*&quot; /e /s /y /q&#xD;&#xA;xcopy &quot;$(ProjectDir).lib\itextsharp.dll&quot; &quot;$(ProjectDir)..\..\..\..\..\bin\PlantAnApp\*.*&quot; /y /q&#xD;&#xA;xcopy &quot;$(ProjectDir).lib\Paperless.DotNetSdk.dll&quot; &quot;$(ProjectDir)..\..\..\..\..\bin\PlantAnApp\*.*&quot; /y /q&#xD;&#xA;xcopy &quot;$(ProjectDir).lib\Paperless.DotNetSdk.dll.config&quot; &quot;$(ProjectDir)..\..\..\..\..\bin\PlantAnApp\*.*&quot; /y /q&#xD;&#xA;&#xD;&#xA;:end" />
-	</Target>
+  <Target Name="CopyFiles" AfterTargets="Build" Condition=" '$(Configuration)' != 'ReleaseAutoBuild' ">
+    <Copy SourceFiles="$(TargetDir)$(TargetName).dll" DestinationFolder="$(WebsiteBinPath)" />
+    <Copy SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFolder="$(WebsiteBinPath)" />
+    <ItemGroup>
+      <ConfigCommonFiles Include="$(ProjectDir)Config\Common\**\*.*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(ConfigCommonFiles)" DestinationFiles="$(WebsiteDnnSharpCommonConfigPath)\%(RecursiveDir)%(Filename)%(Extension)" />
+    <Copy SourceFiles="$(ProjectDir).lib\itextsharp.dll" DestinationFolder="$(WebsiteBinPlantAnAppPath)" />
+    <Copy SourceFiles="$(ProjectDir).lib\Paperless.DotNetSdk.dll" DestinationFolder="$(WebsiteBinPlantAnAppPath)" />
+    <Copy SourceFiles="$(ProjectDir).lib\Paperless.DotNetSdk.dll.config" DestinationFolder="$(WebsiteBinPlantAnAppPath)" />
+  </Target>
 
 </Project>

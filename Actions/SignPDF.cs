@@ -1,5 +1,6 @@
 ﻿using DnnSharp.Common;
 using DnnSharp.Common.Actions;
+using PlantAnApp.Actions;
 using System;
 using Paperless.DotNetSdk.EnrollmentServiceRef;
 using Paperless.DotNetSdk.SigningServiceRef;
@@ -22,7 +23,7 @@ using System.Xml.Linq;
 using System.Linq;
 
 namespace PlantAnApp.Integrations.CloudPdfSign.Actions {
-    public class SignPDF : IActionImpl {
+    public class SignPDF : SyncActionBase {
 
         [ActionParameter(ApplyTokens = true)]
         public bool UserNeedsEnrolment { get; set; }
@@ -57,10 +58,7 @@ namespace PlantAnApp.Integrations.CloudPdfSign.Actions {
         [ActionParameter(ApplyTokens = true)]
         public ActionEvent OnError { get; set; }
 
-        public void Init(StringsDictionary actionTypeSettings, SettingsDictionary actionSettings) {
-        }
-
-        public IActionResult Execute(ActionContext context) {
+        public override IActionResult Execute(ActionContext context) {
 
             if (string.IsNullOrEmpty(SessionId))
                 throw new InternalException("No session ID was provided.");

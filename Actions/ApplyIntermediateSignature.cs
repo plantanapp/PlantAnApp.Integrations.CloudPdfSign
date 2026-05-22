@@ -1,5 +1,6 @@
 ﻿using DnnSharp.Common;
 using DnnSharp.Common.Actions;
+using PlantAnApp.Actions;
 using System;
 using Paperless.DotNetSdk.EnrollmentServiceRef;
 using Paperless.DotNetSdk.SigningServiceRef;
@@ -19,7 +20,7 @@ using System.Linq;
 using System.Security.Cryptography;
 
 namespace PlantAnApp.Integrations.CloudPdfSign.Actions {
-    public class ApplyIntermediateSignature : IActionImpl {
+    public class ApplyIntermediateSignature : SyncActionBase {
 
         [ActionParameter(ApplyTokens = true)]
         public bool UserNeedsEnrolment { get; set; }
@@ -81,10 +82,7 @@ namespace PlantAnApp.Integrations.CloudPdfSign.Actions {
         [ActionParameter(ApplyTokens = true)]
         public ActionEvent OnError { get; set; }
 
-        public void Init(StringsDictionary actionTypeSettings, SettingsDictionary actionSettings) {
-        }
-
-        public IActionResult Execute(ActionContext context) {
+        public override IActionResult Execute(ActionContext context) {
             byte[] tnc = null;
             var folder = StorageUtils.GetOrCreateFolder(context.PortalSettings.PortalId, Folder);
 
